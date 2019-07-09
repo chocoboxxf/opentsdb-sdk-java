@@ -1,11 +1,14 @@
 # OpenTSDB SDK for Java
 
-- Latest Version: 0.1.0-SNAPSHOT (Not Stable)
+- Release Version: 0.1.0
+- Snapshot Version: 0.1.1-SNAPSHOT (Not Stable)
 
 ## Index
 
 1. [Requirements](#requirements)
 2. [Install](#install)
+    1. [From maven](#frommaven)
+    2. [From local build](#fromlocalbuild)
 3. [Quickstart(Sync)](#quickstartsync)
     1. [Create Connection](#create-connection)
     2. [Create Metrics / Tag Keys / Tag Values](#create-metrics--tag-keys--tag-values)
@@ -28,6 +31,20 @@
 
 ## Install
 
+### From maven
+
+1. add release version dependency to pom.xml
+
+```xml
+<dependency>
+  <groupId>com.github.chocoboxxf</groupId>
+  <artifactId>opentsdb-sdk-java</artifactId>
+  <version>0.1.0</version>
+</dependency> 
+```
+
+### From local build
+
 1. check out the code
 
 ```bash
@@ -40,25 +57,25 @@ git clone https://github.com/chocoboxxf/opentsdb-sdk-java.git
 mvn clean package -DskipTests
 ```
 
-3. install package to local repo or run `mvn  install` directly
+3. install snapshot version to local repo or run `mvn  install` directly
 
 ```bash
 mvn install:install-file \
--Dfile=`PWD`/target/opentsdb-sdk-java-0.1.0-SNAPSHOT.jar \
+-Dfile=`PWD`/target/opentsdb-sdk-java-0.1.1-SNAPSHOT.jar \
 -DgroupId=com.github.chocoboxxf \
 -DartifactId=opentsdb-sdk-java \
--Dversion=0.1.0-SNAPSHOT \
+-Dversion=0.1.1-SNAPSHOT \
 -Dpackaging=jar \
 -DpomFile=`PWD`/pom.xml
 ```
 
-4. add dependency to pom.xml
+4. add snapshot version dependency to pom.xml
 
 ```xml
 <dependency>
   <groupId>com.github.chocoboxxf</groupId>
   <artifactId>opentsdb-sdk-java</artifactId>
-  <version>0.1.0-SNAPSHOT</version>
+  <version>0.1.1-SNAPSHOT</version>
 </dependency> 
 ```
 
