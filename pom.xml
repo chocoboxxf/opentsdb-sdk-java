@@ -56,7 +56,7 @@
     <!-- Dependency Versions -->
     <httpasyncclient.version>4.1.4</httpasyncclient.version>
     <commons-lang3.version>3.9</commons-lang3.version>
-    <jackson.version>2.9.8</jackson.version>
+    <jackson.version>2.9.9</jackson.version>
     <slf4j.version>1.7.25</slf4j.version>
     <junit.version>4.12</junit.version>
   </properties>
