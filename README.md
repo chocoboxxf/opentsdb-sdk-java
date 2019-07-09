@@ -2,6 +2,25 @@
 
 - Latest Version: 0.1.0-SNAPSHOT (Not Stable)
 
+## Index
+
+1. [Requirements](#requirements)
+2. [Install](#install)
+3. [Quickstart(Sync)](#quickstartsync)
+    1. [Create Connection](#create-connection)
+    2. [Create Metrics / Tag Keys / Tag Values](#create-metrics--tag-keys--tag-values)
+    3. [Put Data](#put-data)
+    4. [Query Data](#query-data) 
+    5. [Delete Data](#delete-data) 
+4. [Quickstart(Async)](#quickstartasync)
+    1. [Create Connection](#create-connection-1)
+    2. [Create Metrics / Tag Keys / Tag Values](#create-metrics--tag-keys--tag-values-1)
+    3. [Put Data](#put-data-1)
+    4. [Query Data](#query-data-1) 
+    5. [Delete Data](#delete-data-1) 
+5. [Authors](#authors)
+6. [License](#license)
+
 ## Requirements
 
 - Java 1.8 or later
@@ -547,4 +566,4 @@ client.delete(request, callback);
 
 ## License
 
-[Apache License 2.0]
+[Apache License 2.0](LICENSE)
