@@ -7,8 +7,8 @@
 
 1. [Requirements](#requirements)
 2. [Install](#install)
-    1. [From maven](#frommaven)
-    2. [From local build](#fromlocalbuild)
+    1. [From maven](#from-maven)
+    2. [From local build](#from-local-build)
 3. [Quickstart(Sync)](#quickstartsync)
     1. [Create Connection](#create-connection)
     2. [Create Metrics / Tag Keys / Tag Values](#create-metrics--tag-keys--tag-values)
