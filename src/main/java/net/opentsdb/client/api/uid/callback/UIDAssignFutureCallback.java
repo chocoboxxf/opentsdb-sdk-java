@@ -9,7 +9,6 @@ import net.opentsdb.client.api.uid.request.UIDAssignRequest;
 import net.opentsdb.client.api.uid.response.UIDAssignResponse;
 import net.opentsdb.client.exception.ErrorException;
 import net.opentsdb.client.util.HttpUtil;
-import net.opentsdb.client.util.JsonUtil;
 
 /**
  * FutureCallback for UID Assign API
@@ -35,9 +34,7 @@ public class UIDAssignFutureCallback implements FutureCallback<HttpResponse> {
   @Override
   public void completed(HttpResponse response) {
     try {
-      // return 400 when error items exists
-      UIDAssignResponse result = JsonUtil
-          .readValue(HttpUtil.getContent(response, true), UIDAssignResponse.class);
+      UIDAssignResponse result = HttpUtil.getResponse(response, UIDAssignResponse.class);
       result.setRequestUUID(request.getRequestUUID());
       callback.response(result);
     } catch (ErrorException ee) {

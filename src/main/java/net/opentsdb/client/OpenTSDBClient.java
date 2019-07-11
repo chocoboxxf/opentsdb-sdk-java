@@ -6,7 +6,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
 
 import net.opentsdb.client.api.Endpoint;
@@ -66,9 +65,7 @@ public class OpenTSDBClient {
     }
     HttpResponse response = httpClient
         .post(Endpoint.UID_ASSIGN.getPath(), JsonUtil.writeValueAsString(request));
-    // return 400 when error items exists
-    UIDAssignResponse result = JsonUtil
-        .readValue(HttpUtil.getContent(response, true), UIDAssignResponse.class);
+    UIDAssignResponse result = HttpUtil.getResponse(response, UIDAssignResponse.class); 
     result.setRequestUUID(request.getRequestUUID());
     return result;
   }
@@ -94,9 +91,9 @@ public class OpenTSDBClient {
     HttpResponse response = httpClient.post(
         Endpoint.PUT.getPath(), JsonUtil.writeValueAsString(request.getDataPoints()), request.getParameters()
     );
-    PutResponse result = JsonUtil.readValue(HttpUtil.getContent(response), PutResponse.class);
-    // 没有返回信息的时候
-    if (result == null && response.getStatusLine().getStatusCode() == HttpStatus.SC_NO_CONTENT) {
+    PutResponse result = HttpUtil.getResponse(response, PutResponse.class);
+    // empty response
+    if (result == null) {
       result = PutResponse.builder()
           .success(request.getDataPoints().size())
           .failed(0)
@@ -122,9 +119,7 @@ public class OpenTSDBClient {
    */
   public QueryResponse query(QueryRequest request) throws IOException, URISyntaxException {
     HttpResponse response = httpClient.post(Endpoint.QUERY.getPath(), JsonUtil.writeValueAsString(request));
-    List<QueryResult> results = JsonUtil.readValue(
-        HttpUtil.getContent(response), List.class, QueryResult.class
-    );
+    List<QueryResult> results = HttpUtil.getResponse(response, List.class, QueryResult.class);
     return QueryResponse.builder()
         .requestUUID(request.getRequestUUID())
         .results(results)
@@ -155,9 +150,7 @@ public class OpenTSDBClient {
       throw new ReadOnlyException();
     }
     HttpResponse response = httpClient.post(Endpoint.QUERY.getPath(), JsonUtil.writeValueAsString(request));
-    List<QueryResult> results = JsonUtil.readValue(
-        HttpUtil.getContent(response), List.class, QueryResult.class
-    );
+    List<QueryResult> results = HttpUtil.getResponse(response, List.class, QueryResult.class);
     return DeleteResponse.builder()
         .requestUUID(request.getRequestUUID())
         .results(results)

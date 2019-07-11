@@ -11,7 +11,6 @@ import net.opentsdb.client.api.query.response.QueryResponse;
 import net.opentsdb.client.bean.QueryResult;
 import net.opentsdb.client.exception.ErrorException;
 import net.opentsdb.client.util.HttpUtil;
-import net.opentsdb.client.util.JsonUtil;
 
 /**
  * FutureCallback for Query API
@@ -37,9 +36,7 @@ public class QueryFutureCallback implements FutureCallback<HttpResponse> {
   @Override
   public void completed(HttpResponse response) {
     try {
-      List<QueryResult> results = JsonUtil.readValue(
-          HttpUtil.getContent(response), List.class, QueryResult.class
-      );
+      List<QueryResult> results = HttpUtil.getResponse(response, List.class, QueryResult.class);
       QueryResponse queryResponse = QueryResponse.builder()
           .requestUUID(request.getRequestUUID())
           .results(results)
