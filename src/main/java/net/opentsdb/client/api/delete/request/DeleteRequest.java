@@ -125,7 +125,6 @@ public class DeleteRequest extends BaseRequest {
   private Boolean useCalendar;
 
   public DeleteRequest() {
-    super();
   }
 
   public String getStart() {

@@ -15,12 +15,14 @@
     3. [Put Data](#put-data)
     4. [Query Data](#query-data) 
     5. [Delete Data](#delete-data) 
+    6. [Suggest](#suggest) 
 4. [Quickstart(Async)](#quickstartasync)
     1. [Create Connection](#create-connection-1)
     2. [Create Metrics / Tag Keys / Tag Values](#create-metrics--tag-keys--tag-values-1)
     3. [Put Data](#put-data-1)
     4. [Query Data](#query-data-1) 
     5. [Delete Data](#delete-data-1) 
+    6. [Suggest](#suggest-1) 
 5. [Authors](#authors)
 6. [License](#license)
 
@@ -294,6 +296,19 @@ DeleteRequest request = DeleteRequest.builder()
     .build();
 
 DeleteResponse response = client.delete(request);
+```
+
+### Suggest
+
+```java
+// search metrics/tag key/tag value by `q` (keyword)
+SuggestRequest request = SuggestRequest.builder()
+    .type(SuggestType.METRICS)
+    .q("cpu")
+    .max(100)
+    .build();
+
+SuggestResponse response = client.suggest(request);
 ```
 
 ## Quickstart(Async)
@@ -576,6 +591,42 @@ DeleteRequest request = DeleteRequest.builder()
 client.delete(request, callback);
 ```
 
+### Suggest
+
+```java
+// search metrics/tag key/tag value by `q` (keyword)
+// user defined callback object
+SuggestCallback callback = new SuggestCallback() {
+  @Override
+  public void response(SuggestResponse response) {
+    // ... processing response
+    // System.out.println(response);
+  }
+
+  @Override
+  public void responseError(ErrorException ee) {
+    // .. processing error response
+    // System.out.println(ee);
+  }
+
+  @Override
+  public void failed(Exception e) {
+    // .. processing failed request
+    // System.out.println(e);
+  }
+};
+
+// creating request is the same as sync version 
+
+SuggestRequest request = SuggestRequest.builder()
+    .type(SuggestType.METRICS)
+    .q("cpu")
+    .max(100)
+    .build();
+
+// no return, processing response by callback
+client.suggest(request, callback);
+```
 
 ## Authors
 

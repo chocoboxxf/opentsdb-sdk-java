@@ -18,6 +18,9 @@ import net.opentsdb.client.api.put.response.PutResponse;
 import net.opentsdb.client.api.query.callback.QueryCallback;
 import net.opentsdb.client.api.query.request.QueryRequest;
 import net.opentsdb.client.api.query.response.QueryResponse;
+import net.opentsdb.client.api.suggest.callback.SuggestCallback;
+import net.opentsdb.client.api.suggest.request.SuggestRequest;
+import net.opentsdb.client.api.suggest.response.SuggestResponse;
 import net.opentsdb.client.api.uid.callback.UIDAssignCallback;
 import net.opentsdb.client.api.uid.request.UIDAssignRequest;
 import net.opentsdb.client.api.uid.response.UIDAssignResponse;
@@ -26,6 +29,7 @@ import net.opentsdb.client.bean.DataPoint;
 import net.opentsdb.client.bean.Filter;
 import net.opentsdb.client.bean.FilterType;
 import net.opentsdb.client.bean.Query;
+import net.opentsdb.client.bean.SuggestType;
 import net.opentsdb.client.exception.ErrorException;
 
 public class AsyncOpenTSDBClientTest {
@@ -258,6 +262,36 @@ public class AsyncOpenTSDBClientTest {
         .build();
 
     client.delete(request, callback);
+  }
+
+  @Test
+  public void testSuggest() throws Exception {
+    SuggestCallback callback = new SuggestCallback() {
+      @Override
+      public void response(SuggestResponse response) {
+        System.out.println("response");
+        System.out.println(response);
+      }
+
+      @Override
+      public void responseError(ErrorException ee) {
+        System.out.println("response error");
+        System.out.println(ee.getMessage());
+      }
+
+      @Override
+      public void failed(Exception e) {
+        System.out.println("failed");
+        System.out.println(e.getMessage());
+      }
+    };
+    SuggestRequest request = SuggestRequest.builder()
+        .type(SuggestType.METRICS)
+        .q("cpu")
+        .max(100)
+        .build();
+
+    client.suggest(request, callback);
   }
 
   @After

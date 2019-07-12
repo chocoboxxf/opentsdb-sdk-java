@@ -16,6 +16,9 @@ import net.opentsdb.client.api.put.request.PutRequest;
 import net.opentsdb.client.api.query.callback.QueryCallback;
 import net.opentsdb.client.api.query.callback.QueryFutureCallback;
 import net.opentsdb.client.api.query.request.QueryRequest;
+import net.opentsdb.client.api.suggest.callback.SuggestCallback;
+import net.opentsdb.client.api.suggest.callback.SuggestFutureCallback;
+import net.opentsdb.client.api.suggest.request.SuggestRequest;
 import net.opentsdb.client.api.uid.callback.UIDAssignCallback;
 import net.opentsdb.client.api.uid.callback.UIDAssignFutureCallback;
 import net.opentsdb.client.api.uid.request.UIDAssignRequest;
@@ -150,6 +153,35 @@ public class AsyncOpenTSDBClient {
         Endpoint.QUERY.getPath(),
         JsonUtil.writeValueAsString(request),
         new DeleteFutureCallback(request, callback)
+    );
+  }
+
+  /**
+   * /api/suggest
+   * <br/><br/>
+   *
+   * This endpoint provides a means of implementing an "auto-complete" call
+   * that can be accessed repeatedly as a user types a request in a GUI.
+   * It does not offer full text searching or wildcards, 
+   * rather it simply matches the entire string passed in the query 
+   * on the first characters of the stored data. 
+   * For example, passing a query of type=metrics&q=sys 
+   * will return the top 25 metrics in the system that start with sys.
+   * Matching is case sensitive, so sys will not match System.CPU.
+   * Results are sorted alphabetically.
+   * @see <a href="http://opentsdb.net/docs/build/html/api_http/suggest.html">/api/suggest</a>
+   *
+   * @param request SuggestRequest
+   * @param callback SuggestCallback
+   * @throws IOException
+   * @throws URISyntaxException
+   */
+  public void suggest(SuggestRequest request, SuggestCallback callback)
+      throws IOException, URISyntaxException {
+    httpClient.post(
+        Endpoint.SUGGEST.getPath(),
+        JsonUtil.writeValueAsString(request),
+        new SuggestFutureCallback(request, callback)
     );
   }
 

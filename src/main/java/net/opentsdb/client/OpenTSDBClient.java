@@ -15,6 +15,8 @@ import net.opentsdb.client.api.put.request.PutRequest;
 import net.opentsdb.client.api.put.response.PutResponse;
 import net.opentsdb.client.api.query.request.QueryRequest;
 import net.opentsdb.client.api.query.response.QueryResponse;
+import net.opentsdb.client.api.suggest.request.SuggestRequest;
+import net.opentsdb.client.api.suggest.response.SuggestResponse;
 import net.opentsdb.client.api.uid.request.UIDAssignRequest;
 import net.opentsdb.client.api.uid.response.UIDAssignResponse;
 import net.opentsdb.client.bean.QueryResult;
@@ -152,6 +154,34 @@ public class OpenTSDBClient {
     HttpResponse response = httpClient.post(Endpoint.QUERY.getPath(), JsonUtil.writeValueAsString(request));
     List<QueryResult> results = HttpUtil.getResponse(response, List.class, QueryResult.class);
     return DeleteResponse.builder()
+        .requestUUID(request.getRequestUUID())
+        .results(results)
+        .build();
+  }
+
+  /**
+   * /api/suggest
+   * <br/><br/>
+   * 
+   * This endpoint provides a means of implementing an "auto-complete" call
+   * that can be accessed repeatedly as a user types a request in a GUI.
+   * It does not offer full text searching or wildcards, 
+   * rather it simply matches the entire string passed in the query 
+   * on the first characters of the stored data. 
+   * For example, passing a query of type=metrics&q=sys 
+   * will return the top 25 metrics in the system that start with sys.
+   * Matching is case sensitive, so sys will not match System.CPU.
+   * Results are sorted alphabetically.
+   * @see <a href="http://opentsdb.net/docs/build/html/api_http/suggest.html">/api/suggest</a>
+   * 
+   * @param request SuggestRequest
+   * @throws IOException
+   * @throws URISyntaxException
+   */
+  public SuggestResponse suggest(SuggestRequest request) throws IOException, URISyntaxException {
+    HttpResponse response = httpClient.post(Endpoint.SUGGEST.getPath(), JsonUtil.writeValueAsString(request));
+    List<String> results = HttpUtil.getResponse(response, List.class, String.class);
+    return SuggestResponse.builder()
         .requestUUID(request.getRequestUUID())
         .results(results)
         .build();
