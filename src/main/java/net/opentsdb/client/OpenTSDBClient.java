@@ -13,12 +13,15 @@ import net.opentsdb.client.api.delete.request.DeleteRequest;
 import net.opentsdb.client.api.delete.response.DeleteResponse;
 import net.opentsdb.client.api.put.request.PutRequest;
 import net.opentsdb.client.api.put.response.PutResponse;
+import net.opentsdb.client.api.query.request.QueryLastRequest;
 import net.opentsdb.client.api.query.request.QueryRequest;
+import net.opentsdb.client.api.query.response.QueryLastResponse;
 import net.opentsdb.client.api.query.response.QueryResponse;
 import net.opentsdb.client.api.suggest.request.SuggestRequest;
 import net.opentsdb.client.api.suggest.response.SuggestResponse;
 import net.opentsdb.client.api.uid.request.UIDAssignRequest;
 import net.opentsdb.client.api.uid.response.UIDAssignResponse;
+import net.opentsdb.client.bean.LastDataPoint;
 import net.opentsdb.client.bean.QueryResult;
 import net.opentsdb.client.exception.ReadOnlyException;
 import net.opentsdb.client.http.HttpClient;
@@ -50,7 +53,7 @@ public class OpenTSDBClient {
    * <br/><br/>
    * This endpoint enables assigning UIDs to new metrics, tag names and tag values.
    * Multiple types and names can be provided in a single call
-   * and the API will process each name individually, 
+   * and the API will process each name individually,
    * reporting which names were assigned UIDs successfully, along with the UID assigned,
    * and which failed due to invalid characters or had already been assigned.
    * Assignment can be performed via query string or content data.
@@ -67,7 +70,7 @@ public class OpenTSDBClient {
     }
     HttpResponse response = httpClient
         .post(Endpoint.UID_ASSIGN.getPath(), JsonUtil.writeValueAsString(request));
-    UIDAssignResponse result = HttpUtil.getResponse(response, UIDAssignResponse.class); 
+    UIDAssignResponse result = HttpUtil.getResponse(response, UIDAssignResponse.class);
     result.setRequestUUID(request.getRequestUUID());
     return result;
   }
@@ -137,7 +140,7 @@ public class OpenTSDBClient {
    * Executing the query a second time should return empty results.
    * <br/><br/>
    * WARNING:
-   * Deleting data is permanent. Also beware that when deleting, 
+   * Deleting data is permanent. Also beware that when deleting,
    * some data outside the boundaries of the start and end times may be deleted
    * as data is stored on an hourly basis.
    *
@@ -162,18 +165,18 @@ public class OpenTSDBClient {
   /**
    * /api/suggest
    * <br/><br/>
-   * 
+   *
    * This endpoint provides a means of implementing an "auto-complete" call
    * that can be accessed repeatedly as a user types a request in a GUI.
-   * It does not offer full text searching or wildcards, 
-   * rather it simply matches the entire string passed in the query 
-   * on the first characters of the stored data. 
-   * For example, passing a query of type=metrics&q=sys 
+   * It does not offer full text searching or wildcards,
+   * rather it simply matches the entire string passed in the query
+   * on the first characters of the stored data.
+   * For example, passing a query of type=metrics&q=sys
    * will return the top 25 metrics in the system that start with sys.
    * Matching is case sensitive, so sys will not match System.CPU.
    * Results are sorted alphabetically.
    * @see <a href="http://opentsdb.net/docs/build/html/api_http/suggest.html">/api/suggest</a>
-   * 
+   *
    * @param request SuggestRequest
    * @throws IOException
    * @throws URISyntaxException
@@ -182,6 +185,30 @@ public class OpenTSDBClient {
     HttpResponse response = httpClient.post(Endpoint.SUGGEST.getPath(), JsonUtil.writeValueAsString(request));
     List<String> results = HttpUtil.getResponse(response, List.class, String.class);
     return SuggestResponse.builder()
+        .requestUUID(request.getRequestUUID())
+        .results(results)
+        .build();
+  }
+
+  /**
+   * /api/query/last <br/><br/>
+   *
+   * This endpoint (2.1 and later) provides support for accessing the latest value of individual
+   * time series. It provides an optimization over a regular query when only the last data point is
+   * required. Locating the last point can be done with the timestamp of the meta data counter or by
+   * scanning backwards from the current system time.
+   * @see <a href="http://opentsdb.net/docs/build/html/api_http/query/last.html">/api/suggest</a>
+   *
+   * @param request QueryLastRequest
+   * @throws IOException
+   * @throws URISyntaxException
+   */
+  public QueryLastResponse queryLast(QueryLastRequest request)
+      throws IOException, URISyntaxException {
+    HttpResponse response = httpClient
+        .post(Endpoint.QUERY_LAST.getPath(), JsonUtil.writeValueAsString(request));
+    List<LastDataPoint> results = HttpUtil.getResponse(response, List.class, LastDataPoint.class);
+    return QueryLastResponse.builder()
         .requestUUID(request.getRequestUUID())
         .results(results)
         .build();

@@ -13,7 +13,9 @@ import net.opentsdb.client.api.delete.request.DeleteRequest;
 import net.opentsdb.client.api.delete.response.DeleteResponse;
 import net.opentsdb.client.api.put.request.PutRequest;
 import net.opentsdb.client.api.put.response.PutResponse;
+import net.opentsdb.client.api.query.request.QueryLastRequest;
 import net.opentsdb.client.api.query.request.QueryRequest;
+import net.opentsdb.client.api.query.response.QueryLastResponse;
 import net.opentsdb.client.api.query.response.QueryResponse;
 import net.opentsdb.client.api.suggest.request.SuggestRequest;
 import net.opentsdb.client.api.suggest.response.SuggestResponse;
@@ -23,6 +25,7 @@ import net.opentsdb.client.bean.Aggregator;
 import net.opentsdb.client.bean.DataPoint;
 import net.opentsdb.client.bean.Filter;
 import net.opentsdb.client.bean.FilterType;
+import net.opentsdb.client.bean.LastDataPointQuery;
 import net.opentsdb.client.bean.Query;
 import net.opentsdb.client.bean.SuggestType;
 
@@ -182,7 +185,7 @@ public class OpenTSDBClientTest {
     DeleteResponse response = client.delete(request);
     System.out.println(response);
   }
-  
+
   @Test
   public void testSuggest() throws Exception {
     SuggestRequest request = SuggestRequest.builder()
@@ -192,6 +195,38 @@ public class OpenTSDBClientTest {
         .build();
 
     SuggestResponse response = client.suggest(request);
+    System.out.println(response);
+  }
+
+  @Test
+  public void testQueryLast() throws Exception {
+    Map<String, String> tags = new LinkedHashMap<>();
+    tags.put("dc", "sh");
+    tags.put("host", "host001");
+
+    List<String> tsuids = new LinkedList<>();
+    tsuids.add("000001000001000001");
+
+    List<LastDataPointQuery> queries = new LinkedList<>();
+    queries.add(
+        LastDataPointQuery.builder()
+            .metric("cpu.0.idle")
+            .tags(tags)
+            .build()
+    );
+    queries.add(
+        LastDataPointQuery.builder()
+            .tsuids(tsuids)
+            .build()
+    );
+
+    QueryLastRequest request = QueryLastRequest.builder()
+        .queries(queries)
+        .resolveNames(true)
+        .backScan(0)
+        .build();
+
+    QueryLastResponse response = client.queryLast(request);
     System.out.println(response);
   }
 

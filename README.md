@@ -13,16 +13,18 @@
     1. [Create Connection](#create-connection)
     2. [Create Metrics / Tag Keys / Tag Values](#create-metrics--tag-keys--tag-values)
     3. [Put Data](#put-data)
-    4. [Query Data](#query-data) 
-    5. [Delete Data](#delete-data) 
-    6. [Suggest](#suggest) 
+    4. [Query Data](#query-data)
+    5. [Query Last Data Point](#query-last-data-point)
+    6. [Delete Data](#delete-data) 
+    7. [Suggest](#suggest) 
 4. [Quickstart(Async)](#quickstartasync)
     1. [Create Connection](#create-connection-1)
     2. [Create Metrics / Tag Keys / Tag Values](#create-metrics--tag-keys--tag-values-1)
     3. [Put Data](#put-data-1)
     4. [Query Data](#query-data-1) 
-    5. [Delete Data](#delete-data-1) 
-    6. [Suggest](#suggest-1) 
+    5. [Query Last Data Point](#query-last-data-point-1)
+    6. [Delete Data](#delete-data-1) 
+    7. [Suggest](#suggest-1) 
 5. [Authors](#authors)
 6. [License](#license)
 
@@ -263,6 +265,39 @@ QueryRequest request = QueryRequest.builder()
 QueryResponse response = client.query(request);
 ```
 
+### Query Last Data Point
+
+```java
+Map<String, String> tags = new LinkedHashMap<>();
+tags.put("dc", "sh");
+tags.put("host", "host001");
+
+List<String> tsuids = new LinkedList<>();
+tsuids.add("000001000001000001");
+
+List<LastDataPointQuery> queries = new LinkedList<>();
+// query by metric and tags
+queries.add(
+    LastDataPointQuery.builder()
+        .metric("cpu.0.idle")
+        .tags(tags)
+        .build()
+);
+// query by tsuids
+queries.add(
+    LastDataPointQuery.builder()
+        .tsuids(tsuids)
+        .build()
+);
+
+QueryLastRequest request = QueryLastRequest.builder()
+    .queries(queries)
+    .resolveNames(true)
+    .backScan(0)
+    .build();
+
+QueryLastResponse response = client.queryLast(request);
+```
 
 ### Delete Data
 
@@ -531,6 +566,59 @@ QueryRequest request = QueryRequest.builder()
 
 // no return, processing response by callback
 client.query(request2, callback);
+```
+
+### Query Last Data Point
+```java
+QueryLastCallback callback = new QueryLastCallback() {
+  @Override
+  public void response(QueryLastResponse response) {
+    // ... processing response
+    // System.out.println(response);
+  }
+
+  @Override
+  public void responseError(ErrorException ee) {
+    // .. processing error response
+    // System.out.println(ee);
+  }
+
+  @Override
+  public void failed(Exception e) {
+    // .. processing failed request
+    // System.out.println(e);
+  }
+};
+Map<String, String> tags = new LinkedHashMap<>();
+tags.put("dc", "sh");
+tags.put("host", "host001");
+
+List<String> tsuids = new LinkedList<>();
+tsuids.add(
+    "000001000001000001");
+
+List<LastDataPointQuery> queries = new LinkedList<>();
+// query by metric and tags
+queries.add(
+    LastDataPointQuery.builder()
+        .metric("cpu.0.idle")
+        .tags(tags)
+        .build()
+);
+// query by tsuid
+queries.add(
+    LastDataPointQuery.builder()
+        .tsuids(tsuids)
+        .build()
+);
+
+QueryLastRequest request = QueryLastRequest.builder()
+    .queries(queries)
+    .resolveNames(true)
+    .backScan(0)
+    .build();
+
+client.queryLast(request, callback);
 ```
 
 ### Delete Data

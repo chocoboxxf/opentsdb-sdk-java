@@ -16,7 +16,10 @@ import net.opentsdb.client.api.put.callback.PutCallback;
 import net.opentsdb.client.api.put.request.PutRequest;
 import net.opentsdb.client.api.put.response.PutResponse;
 import net.opentsdb.client.api.query.callback.QueryCallback;
+import net.opentsdb.client.api.query.callback.QueryLastCallback;
+import net.opentsdb.client.api.query.request.QueryLastRequest;
 import net.opentsdb.client.api.query.request.QueryRequest;
+import net.opentsdb.client.api.query.response.QueryLastResponse;
 import net.opentsdb.client.api.query.response.QueryResponse;
 import net.opentsdb.client.api.suggest.callback.SuggestCallback;
 import net.opentsdb.client.api.suggest.request.SuggestRequest;
@@ -28,14 +31,15 @@ import net.opentsdb.client.bean.Aggregator;
 import net.opentsdb.client.bean.DataPoint;
 import net.opentsdb.client.bean.Filter;
 import net.opentsdb.client.bean.FilterType;
+import net.opentsdb.client.bean.LastDataPointQuery;
 import net.opentsdb.client.bean.Query;
 import net.opentsdb.client.bean.SuggestType;
 import net.opentsdb.client.exception.ErrorException;
 
 public class AsyncOpenTSDBClientTest {
-  
+
   private AsyncOpenTSDBClient client;
-  
+
   @Before
   public void setUp() throws Exception {
     OpenTSDBConfig config = OpenTSDBConfig.builder()
@@ -50,7 +54,7 @@ public class AsyncOpenTSDBClientTest {
         .build();
     client = new AsyncOpenTSDBClient(config);
   }
-  
+
   @Test
   public void testUIDAssign() throws Exception {
     UIDAssignCallback callback = new UIDAssignCallback() {
@@ -150,7 +154,7 @@ public class AsyncOpenTSDBClientTest {
 
     client.put(request, callback);
   }
-  
+
   @Test
   public void testQuery() throws Exception {
     QueryCallback callback = new QueryCallback() {
@@ -211,10 +215,10 @@ public class AsyncOpenTSDBClientTest {
         .end("1s-ago")
         .queries(queries)
         .build();
-    
+
     client.query(request, callback);
   }
-  
+
   @Test
   public void testDelete() throws Exception {
     DeleteCallback callback = new DeleteCallback() {
@@ -292,6 +296,56 @@ public class AsyncOpenTSDBClientTest {
         .build();
 
     client.suggest(request, callback);
+  }
+
+  @Test
+  public void testQueryLast() throws Exception {
+    QueryLastCallback callback = new QueryLastCallback() {
+      @Override
+      public void response(QueryLastResponse response) {
+        System.out.println("response");
+        System.out.println(response);
+      }
+
+      @Override
+      public void responseError(ErrorException ee) {
+        System.out.println("response error");
+        System.out.println(ee.getMessage());
+      }
+
+      @Override
+      public void failed(Exception e) {
+        System.out.println("failed");
+        System.out.println(e.getMessage());
+      }
+    };
+    Map<String, String> tags = new LinkedHashMap<>();
+    tags.put("dc", "sh");
+    tags.put("host", "host001");
+
+    List<String> tsuids = new LinkedList<>();
+    tsuids.add("000001000001000001");
+
+    List<LastDataPointQuery> queries = new LinkedList<>();
+    queries.add(
+        LastDataPointQuery.builder()
+            .metric("cpu.0.idle")
+            .tags(tags)
+            .build()
+    );
+    queries.add(
+        LastDataPointQuery.builder()
+            .tsuids(tsuids)
+            .build()
+    );
+
+    QueryLastRequest request = QueryLastRequest.builder()
+        .queries(queries)
+        .resolveNames(true)
+        .backScan(0)
+        .build();
+
+    client.queryLast(request, callback);
   }
 
   @After
