@@ -9,6 +9,14 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import net.opentsdb.client.api.annotation.request.CreateAnnotationRequest;
+import net.opentsdb.client.api.annotation.request.DeleteAnnotationRequest;
+import net.opentsdb.client.api.annotation.request.GetAnnotationRequest;
+import net.opentsdb.client.api.annotation.request.UpdateAnnotationRequest;
+import net.opentsdb.client.api.annotation.response.CreateAnnotationResponse;
+import net.opentsdb.client.api.annotation.response.DeleteAnnotationResponse;
+import net.opentsdb.client.api.annotation.response.GetAnnotationResponse;
+import net.opentsdb.client.api.annotation.response.UpdateAnnotationResponse;
 import net.opentsdb.client.api.delete.request.DeleteRequest;
 import net.opentsdb.client.api.delete.response.DeleteResponse;
 import net.opentsdb.client.api.put.request.PutRequest;
@@ -227,6 +235,68 @@ public class OpenTSDBClientTest {
         .build();
 
     QueryLastResponse response = client.queryLast(request);
+    System.out.println(response);
+  }
+
+  @Test
+  public void testCreateAnnotation() throws Exception {
+    Map<String, String> custom = new LinkedHashMap<>();
+    custom.put("priority", "T0");
+    custom.put("operator", "user1");
+
+    CreateAnnotationRequest request = CreateAnnotationRequest.builder()
+        .startTime(1369141261)
+        .endTime(1369141262)
+        .tsuid("000001000001000001")
+        .description("Network Outage")
+        .notes("Switch #5 died and was replaced")
+        .custom(custom)
+        .build();
+
+    CreateAnnotationResponse response = client.createAnnotation(request);
+    System.out.println(response);
+  }
+
+  @Test
+  public void testGetAnnotation() throws Exception {
+    GetAnnotationRequest request = GetAnnotationRequest.builder()
+        .startTime(1369141261)
+        .endTime(1369141262)
+        .tsuid("000001000001000001")
+        .build();
+
+    GetAnnotationResponse response = client.getAnnotation(request);
+    System.out.println(response);
+  }
+
+  @Test
+  public void testUpdateAnnotation() throws Exception {
+    Map<String, String> custom = new LinkedHashMap<>();
+    custom.put("priority", "T1");
+    custom.put("operator", "user2");
+
+    UpdateAnnotationRequest request = UpdateAnnotationRequest.builder()
+        .startTime(1369141261)
+        .endTime(1369141264)
+        .tsuid("000001000001000001")
+        .description("Network Outage")
+        .notes("Switch #5 and #6 died and were replaced")
+        .custom(custom)
+        .build();
+
+    UpdateAnnotationResponse response = client.updateAnnotation(request);
+    System.out.println(response);
+  }
+
+  @Test
+  public void testDeleteAnnotation() throws Exception {
+    DeleteAnnotationRequest request = DeleteAnnotationRequest.builder()
+        .startTime(1369141261)
+        .endTime(1369141262)
+        .tsuid("000001000001000001")
+        .build();
+
+    DeleteAnnotationResponse response = client.deleteAnnotation(request);
     System.out.println(response);
   }
 

@@ -12,8 +12,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.concurrent.FutureCallback;
 import org.apache.http.impl.nio.client.CloseableHttpAsyncClient;
 import org.apache.http.impl.nio.client.HttpAsyncClientBuilder;
@@ -83,7 +85,14 @@ public class AsyncHttpClient extends BaseHttpClient {
     log.debug("[HTTP GET] PATH: {}，PARAMS: {}", path, params);
     URI uri = getUri(config.getHost(), config.getPort(), path, params);
     HttpGet httpGet = new HttpGet(uri);
-    return client.execute(httpGet, httpCallback);
+
+    FutureCallback<HttpResponse> responseCallback = null;
+    if (httpCallback != null) {
+      log.debug("Task Number: {}", taskNumber.incrementAndGet());
+      responseCallback = new GracefulCloseFutureCallback(taskNumber, httpCallback);
+    }
+
+    return client.execute(httpGet, responseCallback);
   }
 
   public Future<HttpResponse> post(String path, String jsonBody,
@@ -106,7 +115,43 @@ public class AsyncHttpClient extends BaseHttpClient {
 
     return client.execute(httpPost, responseCallback);
   }
-  
+
+  public Future<HttpResponse> put(String path, String jsonBody,
+      FutureCallback<HttpResponse> httpCallback) throws URISyntaxException {
+    return put(path, jsonBody, null, httpCallback);
+  }
+
+  public Future<HttpResponse> put(String path, String jsonBody, Map<String, String> params,
+      FutureCallback<HttpResponse> httpCallback)
+      throws URISyntaxException {
+    log.debug("[HTTP PUT] PATH: {}，BODY: {}, PARAMS: {}", path, jsonBody, params);
+    URI uri = getUri(config.getHost(), config.getPort(), path, params);
+    HttpPut httpPut = getPutRequest(uri, jsonBody);
+
+    FutureCallback<HttpResponse> responseCallback = null;
+    if (httpCallback != null) {
+      log.debug("Task Number: {}", taskNumber.incrementAndGet());
+      responseCallback = new GracefulCloseFutureCallback(taskNumber, httpCallback);
+    }
+
+    return client.execute(httpPut, responseCallback);
+  }
+
+  public Future<HttpResponse> delete(String path, Map<String, String> params,
+      FutureCallback<HttpResponse> httpCallback)
+      throws URISyntaxException {
+    log.debug("[HTTP DELETE] PATH: {}，PARAMS: {}", path, params);
+    URI uri = getUri(config.getHost(), config.getPort(), path, params);
+    HttpDelete httpDelete = new HttpDelete(uri);
+    FutureCallback<HttpResponse> responseCallback = null;
+    if (httpCallback != null) {
+      log.debug("Task Number: {}", taskNumber.incrementAndGet());
+      responseCallback = new GracefulCloseFutureCallback(taskNumber, httpCallback);
+    }
+
+    return client.execute(httpDelete, responseCallback);
+  }
+
   public void close(boolean force) throws IOException {
     if (!force) {
       while (client.isRunning()) {

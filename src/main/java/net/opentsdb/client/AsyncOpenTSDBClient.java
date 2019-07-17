@@ -7,6 +7,18 @@ import org.apache.http.nio.reactor.IOReactorException;
 import org.slf4j.Logger;
 
 import net.opentsdb.client.api.Endpoint;
+import net.opentsdb.client.api.annotation.callback.CreateAnnotationCallback;
+import net.opentsdb.client.api.annotation.callback.CreateAnnotationFutureCallback;
+import net.opentsdb.client.api.annotation.callback.DeleteAnnotationCallback;
+import net.opentsdb.client.api.annotation.callback.DeleteAnnotationFutureCallback;
+import net.opentsdb.client.api.annotation.callback.GetAnnotationCallback;
+import net.opentsdb.client.api.annotation.callback.GetAnnotationFutureCallback;
+import net.opentsdb.client.api.annotation.callback.UpdateAnnotationCallback;
+import net.opentsdb.client.api.annotation.callback.UpdateAnnotationFutureCallback;
+import net.opentsdb.client.api.annotation.request.CreateAnnotationRequest;
+import net.opentsdb.client.api.annotation.request.DeleteAnnotationRequest;
+import net.opentsdb.client.api.annotation.request.GetAnnotationRequest;
+import net.opentsdb.client.api.annotation.request.UpdateAnnotationRequest;
 import net.opentsdb.client.api.delete.callback.DeleteCallback;
 import net.opentsdb.client.api.delete.callback.DeleteFutureCallback;
 import net.opentsdb.client.api.delete.request.DeleteRequest;
@@ -208,6 +220,104 @@ public class AsyncOpenTSDBClient {
         Endpoint.QUERY_LAST.getPath(),
         JsonUtil.writeValueAsString(request),
         new QueryLastFutureCallback(request, callback)
+    );
+  }
+
+  /**
+   * /api/annotation <br/><br/>
+   *
+   * These endpoints provides a means of adding, editing or deleting annotations stored in the
+   * OpenTSDB backend. Annotations are very basic objects used to record a note of an arbitrary
+   * event at some point, optionally associated with a timeseries. Annotations are not meant to be
+   * used as a tracking or event based system, rather they are useful for providing links to such
+   * systems by displaying a notice on graphs or via API query calls. <br/> When creating, modifying
+   * or deleting annotations, all changes will be propagated to the search plugin if configured.
+   * @see <a href="http://opentsdb.net/docs/build/html/api_http/annotation/index.html">/api/annotation</a>
+   *
+   * @param request CreateAnnotationRequest
+   * @param callback CreateAnnotationCallback
+   * @throws IOException
+   * @throws URISyntaxException
+   */
+  public void createAnnotation(CreateAnnotationRequest request, CreateAnnotationCallback callback)
+      throws IOException, URISyntaxException {
+    httpClient.post(
+        Endpoint.ANNOTATION.getPath(),
+        JsonUtil.writeValueAsString(request),
+        new CreateAnnotationFutureCallback(request, callback)
+    );
+  }
+
+  /**
+   * /api/annotation <br/><br/>
+   *
+   * These endpoints provides a means of adding, editing or deleting annotations stored in the
+   * OpenTSDB backend. Annotations are very basic objects used to record a note of an arbitrary
+   * event at some point, optionally associated with a timeseries. Annotations are not meant to be
+   * used as a tracking or event based system, rather they are useful for providing links to such
+   * systems by displaying a notice on graphs or via API query calls. <br/> When creating, modifying
+   * or deleting annotations, all changes will be propagated to the search plugin if configured.
+   * @see <a href="http://opentsdb.net/docs/build/html/api_http/annotation/index.html">/api/annotation</a>
+   *
+   * @param request GetAnnotationRequest
+   * @param callback GetAnnotationCallback
+   * @throws URISyntaxException
+   */
+  public void getAnnotation(GetAnnotationRequest request, GetAnnotationCallback callback)
+      throws URISyntaxException {
+    httpClient.get(
+        Endpoint.ANNOTATION.getPath(),
+        request.getParameters(),
+        new GetAnnotationFutureCallback(request, callback)
+    );
+  }
+
+  /**
+   * /api/annotation <br/><br/>
+   *
+   * These endpoints provides a means of adding, editing or deleting annotations stored in the
+   * OpenTSDB backend. Annotations are very basic objects used to record a note of an arbitrary
+   * event at some point, optionally associated with a timeseries. Annotations are not meant to be
+   * used as a tracking or event based system, rather they are useful for providing links to such
+   * systems by displaying a notice on graphs or via API query calls. <br/> When creating, modifying
+   * or deleting annotations, all changes will be propagated to the search plugin if configured.
+   * @see <a href="http://opentsdb.net/docs/build/html/api_http/annotation/index.html">/api/annotation</a>
+   *
+   * @param request UpdateAnnotationRequest
+   * @param callback UpdateAnnotationCallback
+   * @throws IOException
+   * @throws URISyntaxException
+   */
+  public void updateAnnotation(UpdateAnnotationRequest request, UpdateAnnotationCallback callback)
+      throws IOException, URISyntaxException {
+    httpClient.put(
+        Endpoint.ANNOTATION.getPath(),
+        JsonUtil.writeValueAsString(request),
+        new UpdateAnnotationFutureCallback(request, callback)
+    );
+  }
+
+  /**
+   * /api/annotation <br/><br/>
+   *
+   * These endpoints provides a means of adding, editing or deleting annotations stored in the
+   * OpenTSDB backend. Annotations are very basic objects used to record a note of an arbitrary
+   * event at some point, optionally associated with a timeseries. Annotations are not meant to be
+   * used as a tracking or event based system, rather they are useful for providing links to such
+   * systems by displaying a notice on graphs or via API query calls. <br/> When creating, modifying
+   * or deleting annotations, all changes will be propagated to the search plugin if configured.
+   * @see <a href="http://opentsdb.net/docs/build/html/api_http/annotation/index.html">/api/annotation</a>
+   *
+   * @param request DeleteAnnotationRequest
+   * @param callback DeleteAnnotationCallback
+   * @throws URISyntaxException
+   */
+  public void deleteAnnotation(DeleteAnnotationRequest request, DeleteAnnotationCallback callback)
+      throws URISyntaxException {
+    httpClient.delete(
+        Endpoint.ANNOTATION.getPath(),
+        request.getParameters(),
+        new DeleteAnnotationFutureCallback(request, callback)
     );
   }
 

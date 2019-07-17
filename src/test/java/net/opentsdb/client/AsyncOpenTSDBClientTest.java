@@ -9,6 +9,18 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import net.opentsdb.client.api.annotation.callback.CreateAnnotationCallback;
+import net.opentsdb.client.api.annotation.callback.DeleteAnnotationCallback;
+import net.opentsdb.client.api.annotation.callback.GetAnnotationCallback;
+import net.opentsdb.client.api.annotation.callback.UpdateAnnotationCallback;
+import net.opentsdb.client.api.annotation.request.CreateAnnotationRequest;
+import net.opentsdb.client.api.annotation.request.DeleteAnnotationRequest;
+import net.opentsdb.client.api.annotation.request.GetAnnotationRequest;
+import net.opentsdb.client.api.annotation.request.UpdateAnnotationRequest;
+import net.opentsdb.client.api.annotation.response.CreateAnnotationResponse;
+import net.opentsdb.client.api.annotation.response.DeleteAnnotationResponse;
+import net.opentsdb.client.api.annotation.response.GetAnnotationResponse;
+import net.opentsdb.client.api.annotation.response.UpdateAnnotationResponse;
 import net.opentsdb.client.api.delete.callback.DeleteCallback;
 import net.opentsdb.client.api.delete.request.DeleteRequest;
 import net.opentsdb.client.api.delete.response.DeleteResponse;
@@ -346,6 +358,144 @@ public class AsyncOpenTSDBClientTest {
         .build();
 
     client.queryLast(request, callback);
+  }
+
+  @Test
+  public void testCreateAnnotation() throws Exception {
+    CreateAnnotationCallback callback = new CreateAnnotationCallback() {
+      @Override
+      public void response(CreateAnnotationResponse response) {
+        System.out.println("response");
+        System.out.println(response);
+      }
+
+      @Override
+      public void responseError(ErrorException ee) {
+        System.out.println("response error");
+        System.out.println(ee.getMessage());
+      }
+
+      @Override
+      public void failed(Exception e) {
+        System.out.println("failed");
+        System.out.println(e.getMessage());
+      }
+    };
+
+    Map<String, String> custom = new LinkedHashMap<>();
+    custom.put("priority", "T0");
+    custom.put("operator", "user1");
+
+    CreateAnnotationRequest request = CreateAnnotationRequest.builder()
+        .startTime(1369141261)
+        .endTime(1369141262)
+        .tsuid("000001000001000001")
+        .description("Network Outage")
+        .notes("Switch #5 died and was replaced")
+        .custom(custom)
+        .build();
+
+    client.createAnnotation(request, callback);
+  }
+
+  @Test
+  public void testGetAnnotation() throws Exception {
+    GetAnnotationCallback callback = new GetAnnotationCallback() {
+      @Override
+      public void response(GetAnnotationResponse response) {
+        System.out.println("response");
+        System.out.println(response);
+      }
+
+      @Override
+      public void responseError(ErrorException ee) {
+        System.out.println("response error");
+        System.out.println(ee.getMessage());
+      }
+
+      @Override
+      public void failed(Exception e) {
+        System.out.println("failed");
+        System.out.println(e.getMessage());
+      }
+    };
+
+    GetAnnotationRequest request = GetAnnotationRequest.builder()
+        .startTime(1369141261)
+        .endTime(1369141262)
+        .tsuid("000001000001000001")
+        .build();
+
+    client.getAnnotation(request, callback);
+  }
+
+  @Test
+  public void testUpdateAnnotation() throws Exception {
+    UpdateAnnotationCallback callback = new UpdateAnnotationCallback() {
+      @Override
+      public void response(UpdateAnnotationResponse response) {
+        System.out.println("response");
+        System.out.println(response);
+      }
+
+      @Override
+      public void responseError(ErrorException ee) {
+        System.out.println("response error");
+        System.out.println(ee.getMessage());
+      }
+
+      @Override
+      public void failed(Exception e) {
+        System.out.println("failed");
+        System.out.println(e.getMessage());
+      }
+    };
+
+    Map<String, String> custom = new LinkedHashMap<>();
+    custom.put("priority", "T1");
+    custom.put("operator", "user2");
+
+    UpdateAnnotationRequest request = UpdateAnnotationRequest.builder()
+        .startTime(1369141261)
+        .endTime(1369141264)
+        .tsuid("000001000001000001")
+        .description("Network Outage")
+        .notes("Switch #5 and #6 died and were replaced")
+        .custom(custom)
+        .build();
+
+    client.updateAnnotation(request, callback);
+  }
+
+  @Test
+  public void testDeleteAnnotation() throws Exception {
+    DeleteAnnotationCallback callback = new DeleteAnnotationCallback() {
+      @Override
+      public void response(DeleteAnnotationResponse response) {
+        System.out.println("response");
+        System.out.println(response);
+      }
+
+      @Override
+      public void responseError(ErrorException ee) {
+        System.out.println("response error");
+        System.out.println(ee.getMessage());
+      }
+
+      @Override
+      public void failed(Exception e) {
+        System.out.println("failed");
+        System.out.println(e.getMessage());
+      }
+    };
+
+    DeleteAnnotationRequest request = DeleteAnnotationRequest.builder()
+        .startTime(1369141261)
+        .endTime(1369141262)
+        .tsuid("000001000001000001")
+        .build();
+
+    client.deleteAnnotation(request, callback);
   }
 
   @After

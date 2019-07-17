@@ -7,6 +7,7 @@ package net.opentsdb.client.api;
  * Endpoints</>
  */
 public enum Endpoint {
+  ANNOTATION("/api/annotation"), // Annotation CRUD
   PUT("/api/put"), // Write Data
   QUERY("/api/query"), // Query Data
   QUERY_LAST("/api/query/last"), // Query latest data

@@ -17,6 +17,11 @@
     5. [Query Last Data Point](#query-last-data-point)
     6. [Delete Data](#delete-data) 
     7. [Suggest](#suggest) 
+    8. [Annotation](#annotation)
+        1. [Create Annotation](#create-annotation)
+        2. [Get Annotation](#get-annotation)
+        3. [Update Annotation](#update-annotation)
+        4. [Delete Annotation](#delete-annotation)
 4. [Quickstart(Async)](#quickstartasync)
     1. [Create Connection](#create-connection-1)
     2. [Create Metrics / Tag Keys / Tag Values](#create-metrics--tag-keys--tag-values-1)
@@ -25,6 +30,11 @@
     5. [Query Last Data Point](#query-last-data-point-1)
     6. [Delete Data](#delete-data-1) 
     7. [Suggest](#suggest-1) 
+    8. [Annotation](#annotation-1)
+        1. [Create Annotation](#create-annotation-1)
+        2. [Get Annotation](#get-annotation-1)
+        3. [Update Annotation](#update-annotation-1)
+        4. [Delete Annotation](#delete-annotation-1)
 5. [Authors](#authors)
 6. [License](#license)
 
@@ -344,6 +354,71 @@ SuggestRequest request = SuggestRequest.builder()
     .build();
 
 SuggestResponse response = client.suggest(request);
+```
+
+### Annotation
+
+#### Create Annotation
+
+```java
+Map<String, String> custom = new LinkedHashMap<>();
+custom.put("priority", "T0");
+custom.put("operator", "user1");
+
+CreateAnnotationRequest request = CreateAnnotationRequest.builder()
+    .startTime(1369141261)
+    .endTime(1369141262) // null if not completed
+    .tsuid("000001000001000001") // null for global event
+    .description("Network Outage")
+    .notes("Switch #5 died and was replaced")
+    .custom(custom)
+    .build();
+
+CreateAnnotationResponse response = client.createAnnotation(request);
+```
+
+#### Get Annotation
+
+```java
+GetAnnotationRequest request = GetAnnotationRequest.builder()
+    .startTime(1369141261)
+    .endTime(1369141262) // not neccesarily
+    .tsuid("000001000001000001")
+    .build();
+
+GetAnnotationResponse response = client.getAnnotation(request);
+```
+
+#### Update Annotation
+
+```java
+Map<String, String> custom = new LinkedHashMap<>();
+custom.put("priority", "T1");
+custom.put("operator", "user2");
+
+UpdateAnnotationRequest request = UpdateAnnotationRequest.builder()
+    .startTime(1369141261)
+    .endTime(1369141264)
+    .tsuid("000001000001000001")
+    .description("Network Outage")
+    .notes("Switch #5 and #6 died and were replaced")
+    .custom(custom)
+    .build();
+
+UpdateAnnotationResponse response = client.updateAnnotation(request);
+```
+
+#### Delete Annotation
+
+```java
+DeleteAnnotationRequest request = DeleteAnnotationRequest.builder()
+    .startTime(1369141261)
+    .endTime(1369141262)
+    .tsuid("000001000001000001")
+    .build();
+
+// nothing in response when succeeded
+DeleteAnnotationResponse response = client.deleteAnnotation(request);
 ```
 
 ## Quickstart(Async)
@@ -714,6 +789,151 @@ SuggestRequest request = SuggestRequest.builder()
 
 // no return, processing response by callback
 client.suggest(request, callback);
+```
+
+### Annotation
+
+#### Create Annotation
+
+```java
+CreateAnnotationCallback callback = new CreateAnnotationCallback() {
+  @Override
+  public void response(CreateAnnotationResponse response) {
+    // ... processing response
+    // System.out.println(response);
+  }
+
+  @Override
+  public void responseError(ErrorException ee) {
+    // .. processing error response
+    // System.out.println(ee);
+  }
+
+  @Override
+  public void failed(Exception e) {
+    // .. processing failed request
+    // System.out.println(e);
+  }
+};
+
+Map<String, String> custom = new LinkedHashMap<>();
+custom.put("priority", "T0");
+custom.put("operator", "user1");
+
+CreateAnnotationRequest request = CreateAnnotationRequest.builder()
+    .startTime(1369141261)
+    .endTime(1369141262) // null if not completed
+    .tsuid("000001000001000001") // null for global event
+    .description("Network Outage")
+    .notes("Switch #5 died and was replaced")
+    .custom(custom)
+    .build();
+
+client.createAnnotation(request, callback);
+```
+
+#### Get Annotation
+
+```java
+GetAnnotationCallback callback = new GetAnnotationCallback() {
+  @Override
+  public void response(GetAnnotationResponse response) {
+    // ... processing response
+    // System.out.println(response);
+  }
+
+  @Override
+  public void responseError(ErrorException ee) {
+    // .. processing error response
+    // System.out.println(ee);
+  }
+
+  @Override
+  public void failed(Exception e) {
+    // .. processing failed request
+    // System.out.println(e);
+  }
+};
+
+GetAnnotationRequest request = GetAnnotationRequest.builder()
+    .startTime(1369141261)
+    .endTime(1369141262) // not neccesarily
+    .tsuid("000001000001000001")
+    .build();
+
+client.getAnnotation(request, callback);
+```
+
+#### Update Annotation
+
+```java
+UpdateAnnotationCallback callback = new UpdateAnnotationCallback() {
+  @Override
+  public void response(UpdateAnnotationResponse response) {
+    // ... processing response
+    // System.out.println(response);
+  }
+
+  @Override
+  public void responseError(ErrorException ee) {
+    // .. processing error response
+    // System.out.println(ee);
+  }
+
+  @Override
+  public void failed(Exception e) {
+    // .. processing failed request
+    // System.out.println(e);
+  }
+};
+
+Map<String, String> custom = new LinkedHashMap<>();
+custom.put("priority", "T1");
+custom.put("operator", "user2");
+
+UpdateAnnotationRequest request = UpdateAnnotationRequest.builder()
+    .startTime(1369141261)
+    .endTime(1369141264)
+    .tsuid("000001000001000001")
+    .description("Network Outage")
+    .notes("Switch #5 and #6 died and were replaced")
+    .custom(custom)
+    .build();
+
+client.updateAnnotation(request, callback);
+```
+
+#### Delete Annotation
+
+```java
+DeleteAnnotationCallback callback = new DeleteAnnotationCallback() {
+  @Override
+  public void response(DeleteAnnotationResponse response) {
+    // ... processing response
+    // System.out.println(response);
+  }
+
+  @Override
+  public void responseError(ErrorException ee) {
+    // .. processing error response
+    // System.out.println(ee);
+  }
+
+  @Override
+  public void failed(Exception e) {
+    // .. processing failed request
+    // System.out.println(e);
+  }
+};
+
+DeleteAnnotationRequest request = DeleteAnnotationRequest.builder()
+    .startTime(1369141261)
+    .endTime(1369141262)
+    .tsuid("000001000001000001")
+    .build();
+
+// nothing in response when succeeded
+client.deleteAnnotation(request, callback);
 ```
 
 ## Authors
