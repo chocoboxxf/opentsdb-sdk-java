@@ -1,7 +1,7 @@
 # OpenTSDB SDK for Java
 
-- Release Version: 0.1.0
-- Snapshot Version: 0.1.1-SNAPSHOT (Not Stable)
+- Release Version: 0.2.0
+- Snapshot Version: 0.2.1-SNAPSHOT (Not Stable)
 
 ## Index
 
@@ -53,7 +53,7 @@
 <dependency>
   <groupId>com.github.chocoboxxf</groupId>
   <artifactId>opentsdb-sdk-java</artifactId>
-  <version>0.1.0</version>
+  <version>0.2.0</version>
 </dependency> 
 ```
 
@@ -75,10 +75,10 @@ mvn clean package -DskipTests
 
 ```bash
 mvn install:install-file \
--Dfile=`PWD`/target/opentsdb-sdk-java-0.1.1-SNAPSHOT.jar \
+-Dfile=`PWD`/target/opentsdb-sdk-java-0.2.1-SNAPSHOT.jar \
 -DgroupId=com.github.chocoboxxf \
 -DartifactId=opentsdb-sdk-java \
--Dversion=0.1.1-SNAPSHOT \
+-Dversion=0.2.1-SNAPSHOT \
 -Dpackaging=jar \
 -DpomFile=`PWD`/pom.xml
 ```
@@ -89,7 +89,7 @@ mvn install:install-file \
 <dependency>
   <groupId>com.github.chocoboxxf</groupId>
   <artifactId>opentsdb-sdk-java</artifactId>
-  <version>0.1.1-SNAPSHOT</version>
+  <version>0.2.1-SNAPSHOT</version>
 </dependency> 
 ```
 
